@@ -1,5 +1,7 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
+const fs = require('fs');
+const path = require('path');
 const Settings = require('./models/Settings');
 
 let client;
@@ -7,7 +9,13 @@ let qrCodeData = '';
 let isReady = false;
 
 const initializeWhatsApp = () => {
-    const authPath = process.env.WHATSAPP_AUTH_PATH || './whatsapp_auth';
+    const authPath = path.resolve(process.env.WHATSAPP_AUTH_PATH || './whatsapp_auth');
+    
+    // Ensure auth directory exists
+    if (!fs.existsSync(authPath)) {
+        fs.mkdirSync(authPath, { recursive: true });
+        console.log(`Created WhatsApp auth directory at: ${authPath}`);
+    }
     
     console.log('Starting WhatsApp client initialization...');
     client = new Client({
