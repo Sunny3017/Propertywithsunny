@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
+
+@theme {
+  --color-primary: #C5A059;
+  --color-primary-dark: #A68546;
+  --color-primary-light: #D4B880;
+  --color-luxury-black: #0A0A0A;
+  --color-luxury-gray: #1A1A1A;
+  --color-luxury-white: #F5F5F5;
+  
+  --font-serif: "Saira", serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "IBM Plex Sans", monospace;
+}
+
+@layer base {
+  :root {
+    --primary: #C5A059;
+    --secondary: #0A0A0A;
+    --text: #F5F5F5;
+    --text-muted: #9CA3AF;
+    --bg-dark: #0A0A0A;
+    --bg-card: #1A1A1A;
+  }
+
+  body {
+    @apply bg-luxury-black text-luxury-white font-sans;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .luxury-card {
+    @apply bg-luxury-gray border border-white/10 rounded-xl overflow-hidden backdrop-blur-md transition-all duration-300;
+  }
+
+  .luxury-card:hover {
+    @apply border-primary/50 shadow-[0_0_20px_rgba(197,160,89,0.15)];
+  }
+
+  .btn-primary {
+    @apply bg-primary text-luxury-black font-semibold py-3 px-8 rounded-full hover:bg-primary-light transition-colors duration-300;
+  }
+
+  .btn-outline {
+    @apply border border-primary text-primary font-semibold py-3 px-8 rounded-full hover:bg-primary hover:text-luxury-black transition-all duration-300;
+  }
+
+  .glass {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-luxury-black;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/30 rounded-full hover:bg-primary/50;
+}

@@ -1,0 +1,17 @@
+{
+  "name": "property-with-sunny",
+  "version": "1.0.0",
+  "description": "Property Management System for Sunny",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "client": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm install --prefix frontend && npm run build --prefix frontend && npm install --prefix backend",
+    "heroku-postbuild": "npm install --prefix frontend && npm run build --prefix frontend"
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
