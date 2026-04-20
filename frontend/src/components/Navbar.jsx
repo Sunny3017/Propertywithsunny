@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone, Crown, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/logo1.png';
 import GooeyNav from './GooeyNav';
@@ -52,7 +52,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          
+          {/* Center Navigation - GooeyNav (Exactly as before for large screens) */}
           <div className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2 h-full">
             <GooeyNav 
               items={gooeyItems} 
@@ -66,7 +66,7 @@ const Navbar = () => {
             />
           </div>
 
-          {/* Book Now - Right */}
+          {/* Book Now - Right (Exactly as before for large screens) */}
           <div className="hidden md:flex items-center z-10">
             <Magnet padding={50} magnetStrength={8}>
               <Link to="/book-now" className="btn-primary !py-3 !px-10 text-[12px] uppercase tracking-widest font-bold hover:shadow-[0_0_30px_rgba(197,160,89,0.3)] transition-all duration-500 block">
@@ -75,42 +75,83 @@ const Navbar = () => {
             </Magnet>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Premium Style (Only visible on mobile) */}
           <div className="lg:hidden flex items-center z-10">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-white p-2 hover:text-primary transition-colors">
-              {isOpen ? <X size={32} /> : <Menu size={32} />}
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className="relative w-11 h-11 flex items-center justify-center rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:border-[#C5A028]/50 hover:bg-white/10 transition-all duration-300"
+            >
+              {isOpen ? <X size="20" className="text-[#C5A028]" /> : <Menu size="20" className="text-white" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Nav */}
+      {/* Mobile Navigation Menu - Premium Design (Only for mobile) */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-luxury-gray border-b border-white/10 overflow-hidden"
+            transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            className="lg:hidden bg-luxury-gray border-t border-[#C5A028]/20 overflow-hidden shadow-2xl"
           >
-            <div className="px-4 pt-2 pb-6 space-y-1">
-              {navLinks.map((link) => (
-                <Link
+            <div className="px-6 pt-6 pb-8 space-y-1">
+              {/* Premium Header for Mobile */}
+              <div className="flex items-center justify-between pb-4 mb-2 border-b border-white/10">
+                <span className="text-[#C5A028] text-[10px] tracking-[0.3em] uppercase font-light">Menu</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-px h-3 bg-white/20"></div>
+                  <Phone size="10" className="text-[#C5A028]/60" />
+                  <span className="text-white/40 text-[9px] tracking-wide">+91 88269 43792</span>
+                </div>
+              </div>
+              
+              {/* Navigation Links */}
+              {navLinks.map((link, idx) => (
+                <motion.div
                   key={link.name}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className="block px-3 py-4 text-base font-medium text-white/80 hover:text-primary border-b border-white/5"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
                 >
-                  {link.name}
-                </Link>
+                  <Link
+                    to={link.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`flex items-center justify-between px-4 py-4 rounded-sm transition-all duration-300 ${
+                      location.pathname === link.path 
+                        ? 'bg-[#C5A028]/10 text-[#C5A028] border-l-2 border-[#C5A028]' 
+                        : 'text-white/70 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span className="font-light tracking-wide text-sm uppercase">{link.name}</span>
+                    {location.pathname === link.path && <ChevronDown size="14" className="rotate-[-90deg]" />}
+                  </Link>
+                </motion.div>
               ))}
-              <Link
-                to="/book-now"
-                onClick={() => setIsOpen(false)}
-                className="block w-full text-center mt-6 btn-primary"
+              
+              {/* Mobile Book Now Button - Premium */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="pt-6 mt-4"
               >
-                Book Now
-              </Link>
+                <Link
+                  to="/book-now"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-center gap-3 w-full py-4 bg-gradient-to-r from-[#C5A028] to-[#D4AF37] rounded-sm text-black font-bold text-sm uppercase tracking-wider transition-all duration-300 hover:shadow-[0_0_30px_rgba(197,160,40,0.3)]"
+                >
+                  <Crown size="16" />
+                  Book Site Visit
+                </Link>
+              </motion.div>
+              
+              {/* Premium Footer Text */}
+              <div className="text-center pt-6">
+                <span className="text-white/20 text-[7px] tracking-[0.2em] uppercase">Green Haven — Sector 16B, Noida Extension</span>
+              </div>
             </div>
           </motion.div>
         )}
