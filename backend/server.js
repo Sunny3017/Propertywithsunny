@@ -84,11 +84,18 @@ app.use('/api/settings', require('./routes/settingsRoutes'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
+    const frontendPath = path.join(__dirname, '..', 'frontend', 'dist');
+    
     // Set static folder
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+    app.use(express.static(frontendPath));
 
-    app.get('(.*)', (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+    // All other routes should serve the frontend index.html
+    app.get('(.*)', (req, res, next) => {
+        // If the request is for an API route, don't serve index.html
+        if (req.url.startsWith('/api/')) {
+            return next();
+        }
+        res.sendFile(path.join(frontendPath, 'index.html'));
     });
 } else {
     app.get('/', (req, res) => {
