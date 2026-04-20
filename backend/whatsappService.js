@@ -15,7 +15,7 @@ const initializeWhatsApp = () => {
         }),
         puppeteer: {
             handleSIGINT: false,
-            headless: process.env.NODE_ENV === 'production' ? true : false,
+            headless: true,
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -25,6 +25,7 @@ const initializeWhatsApp = () => {
                 '--no-zygote',
                 '--disable-gpu'
             ],
+            executablePath: process.env.CHROME_PATH || undefined
         }
     });
 
