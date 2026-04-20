@@ -9,6 +9,7 @@ let isReady = false;
 const initializeWhatsApp = () => {
     const authPath = process.env.WHATSAPP_AUTH_PATH || './whatsapp_auth';
     
+    console.log('Starting WhatsApp client initialization...');
     client = new Client({
         authStrategy: new LocalAuth({
             dataPath: authPath
@@ -23,18 +24,29 @@ const initializeWhatsApp = () => {
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
                 '--no-zygote',
-                '--disable-gpu'
+                '--disable-gpu',
+                '--disable-extensions',
+                '--disable-software-rasterizer'
             ],
-            executablePath: process.env.CHROME_PATH || undefined
+            executablePath: process.env.CHROME_PATH || (process.platform === 'linux' ? '/usr/bin/google-chrome' : undefined)
         }
     });
 
     client.on('qr', (qr) => {
-        console.log('QR Received');
+        console.log('QR Received - Generating Data URL...');
         qrcode.toDataURL(qr, (err, url) => {
+            if (err) {
+                console.error('Error generating QR Data URL:', err);
+                return;
+            }
             qrCodeData = url;
             isReady = false;
+            console.log('QR Data URL generated successfully');
         });
+    });
+
+    client.on('loading_screen', (percent, message) => {
+        console.log('WhatsApp Loading:', percent, message);
     });
 
     client.on('ready', () => {
@@ -60,7 +72,14 @@ const initializeWhatsApp = () => {
         setTimeout(initializeWhatsApp, 5000);
     });
 
-    client.initialize().catch(err => console.error('WhatsApp Init Error:', err));
+    console.log('Calling client.initialize()...');
+    client.initialize()
+        .then(() => console.log('WhatsApp client.initialize() promise resolved'))
+        .catch(err => {
+            console.error('WhatsApp Init Error:', err);
+            // If it fails, try to re-initialize after a while
+            setTimeout(initializeWhatsApp, 30000);
+        });
 };
 
 const getWhatsAppStatus = () => {
