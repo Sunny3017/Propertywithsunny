@@ -240,7 +240,22 @@ const Ballpit = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // 1. WebGL Support Check
+    // 1. WebGL Support Check & Context Loss Handling
+    const handleContextLost = (event) => {
+      event.preventDefault();
+      console.warn('THREE.WebGLRenderer: Context Lost.');
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+
+    const handleContextRestored = () => {
+      console.log('THREE.WebGLRenderer: Context Restored.');
+      // The renderer should automatically try to restore, but we might need to recreate some resources
+      // For simplicity, we can just trigger a re-render by resetting state if we had any
+    };
+
+    canvas.addEventListener('webglcontextlost', handleContextLost, false);
+    canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
     if (!gl) {
       console.error('WebGL not supported');
@@ -394,6 +409,8 @@ const Ballpit = ({
 
     // 6. Cleanup
     return () => {
+      canvas.removeEventListener('webglcontextlost', handleContextLost);
+      canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', onMouseMove);
       cancelAnimationFrame(requestRef.current);

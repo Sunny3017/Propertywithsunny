@@ -90,11 +90,8 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(frontendPath));
 
     // All other routes should serve the frontend index.html
-    app.get('(.*)', (req, res, next) => {
-        // If the request is for an API route, don't serve index.html
-        if (req.url.startsWith('/api/')) {
-            return next();
-        }
+    app.get(/^(?!\/api).+/, (req, res) => {
+        const frontendPath = path.join(__dirname, '..', 'frontend', 'dist');
         res.sendFile(path.join(frontendPath, 'index.html'));
     });
 } else {
